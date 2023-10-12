@@ -3,8 +3,8 @@ const { Sequelize , DataTypes } = require('sequelize')
 const sequelize = new Sequelize({
     host: 'localhost',
     username: 'root',
-    password: '1234',
-    database: 'bookstore',
+    password: 'admin',
+    database: 'bookshop',
     dialect: "mysql",
 })
 

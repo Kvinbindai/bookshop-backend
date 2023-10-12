@@ -1,18 +1,23 @@
 const bcrypt = require('bcrypt')
-const { User }= require('../models/UserModel.js')
+const  User  = require('../models/UserModel.js')
+const createError = require('http-errors')
 const saltRound = 10
 
-const getAllUser = async (req,res) => {
-    const data = await User.findAll({
-        where : { status : 'active' }
-    })
-    res.send({
-        message : 'All User',
-        list : data
-    })
+const getAllUser = async (req,res,next) => {
+   try{
+        const data = await User.findAll({
+            where : { status : 'active' }
+        })
+        return res.json({
+            message : 'All User',
+            list : data
+        })
+   }catch(err){
+        return next(err)
+   }
 }
 
-const addUser = async ( req ,res ) =>{
+const addUser = async ( req ,res , next ) =>{
     try{
         let { username , password , email } = req.body
         
@@ -24,12 +29,12 @@ const addUser = async ( req ,res ) =>{
             email : email
         })
         
-        res.json({
+        return res.json({
             message: 'Create User Complete',
             data : newUser
         })
     }catch(err){
-        throw(err)
+        return next(err)
     }
 }
 
@@ -40,7 +45,7 @@ const getOne = async (req ,res) => {
     })
     if(!foundUser){
         res.status(400)
-        res.json({
+        return res.json({
             message : 'Its doesnt exists'
         })
     }
