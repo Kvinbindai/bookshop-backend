@@ -1,30 +1,23 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const allRoute = require('./routes/allRoute')
-const auth = require('./routes/auth')
 const app = express()
 const port = 3001
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
+app.get('/',(req,res)=>{
+    console.log(res)
+})
 
-// app.get('/',(req,res)=>{
-//     return res.json({
-//         req : req,
-//         res : res
-//     })
-// })
-
-app.use('/login',auth)
+// app.use('/login',auth)
 
 app.use('/api',allRoute)
 
-//Error Handle
+//ถ้าไม่ได้เขียนดักไว้ให้มาดักที่นี่
 app.use((err,req,res,next)=>{
-    res.status(err.status)
-    return res.json({
-        code : err.code,
-        error : err.message
-    })
+    return  res.status(err.status || 500).json({ msg: err.message });
 })
 
 app.listen(port,()=>{

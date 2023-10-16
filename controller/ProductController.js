@@ -1,11 +1,12 @@
 const createError = require('http-errors')
 const Product = require('../models/ProductModel')
 
+
 const addProduct = async (req,res) => {
     try{
         const product = req.body
         const newProduct = await Product.create(product)
-        res.json({
+        return  res.json({
             message : 'Add Product Complete',
             data : newProduct
         })
@@ -18,7 +19,7 @@ const getAllProduct = async (req,res) => {
         const allProduct = await Product.findAll({where:{
             status : 'active'
         }})    
-        res.json({
+        return res.json({
             message: "All Product",
             data : allProduct
         })
@@ -30,14 +31,15 @@ const getOneProduct = async (req,res,next) => {
     const bookId = req.params.id
     // const userId = req.query.userId
     try{
-        const product = await Product.findOne({where:{
-            id : bookId
-            // Ownerid : userId
-        }})
+        const product = await Product.findOne({
+            where:{
+                id : bookId
+                // Ownerid : userId
+            }})
         if(!product){
-            return next(createError(404,'Cant Found Product'))
+            return next(createError(404,'product doesnt exits'))
         }  
-        res.json({
+        return  res.json({
             message: "Found Product",
             data : product
         })

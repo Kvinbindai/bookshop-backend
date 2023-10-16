@@ -38,16 +38,13 @@ const addUser = async ( req ,res , next ) =>{
     }
 }
 
-const getOne = async (req ,res) => {
+const getOne = async (req ,res, next) => {
    try{
     let foundUser = await User.findOne({
         where : { id : req.params.id }
     })
     if(!foundUser){
-        res.status(400)
-        return res.json({
-            message : 'Its doesnt exists'
-        })
+        return next(createError(404,'its doesnt exits'))
     }
     res.json({
         mesaage : 'Found User',
@@ -58,16 +55,13 @@ const getOne = async (req ,res) => {
    }
 }
 
-const updateUser = async (req,res) => {
+const updateUser = async (req,res,next) => {
     try{
         const foundUser = await User.findOne({
             where : { id : req.params.id }
         })
         if(!foundUser) {
-            res.status(400)
-            res.json({
-            message : 'Its doesnt exists'
-            })
+           return next(createError(404,'user doesnt exits'))
         }
         const hashPassword = await bcrypt.hash(req.body.password,saltRound)
         const userUpdate = await User.update({
@@ -77,12 +71,12 @@ const updateUser = async (req,res) => {
         },{
             where : {id : req.params.id}
         })
-        res.json({
+        return res.json({
             mesaage : 'Update Complete',
             data : userUpdate
         })
    }catch(err){
-    throw err
+        return next(err)
    }
 }
 
@@ -92,7 +86,7 @@ const deleteUser = async (req,res) =>{
     },{
         where : { id : req.params.id }
     }) 
-    res.json({
+    return res.json({
         mesaage : 'delete User complete'
     })
 }
